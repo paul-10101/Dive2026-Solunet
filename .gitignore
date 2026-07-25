@@ -164,8 +164,6 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
 
 # mypy
 .mypy_cache/
@@ -217,3 +215,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 data/raw/
+
+# 디디쌤 코드블럭 빌드 결과물 (실제 API 키가 포함되므로 커밋 금지)
+site/blocks/*/dist/

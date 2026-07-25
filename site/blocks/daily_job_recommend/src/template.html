@@ -1,0 +1,523 @@
+<div id="snc-root">
+<style>
+#snc-root { font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Apple SD Gothic Neo", "Segoe UI", sans-serif; box-sizing: border-box; }
+#snc-root *, #snc-root *::before, #snc-root *::after { box-sizing: inherit; }
+#snc-root button { font: inherit; cursor: pointer; }
+#snc-root p, #snc-root h1, #snc-root h2, #snc-root h3, #snc-root h4, #snc-root h5, #snc-root h6 { margin: 0; }
+
+/* ---------- 미리보기 카드 ---------- */
+#snc-root .snc-preview-card {
+  position: relative; max-width: 672px; margin: 0 auto; overflow: hidden; border-radius: 24px;
+  background: linear-gradient(153deg, #0A1F3C 0%, #0E3D5E 40%, #0A6E82 75%, #0EA5A0 100%);
+}
+#snc-root .snc-preview-card::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; opacity: .3;
+  background: linear-gradient(90deg, transparent 0%, #67e8f9 50%, transparent 100%);
+}
+#snc-root .snc-ring { position: absolute; border: 2px solid #67e8f9; border-radius: 50%; opacity: .1; pointer-events: none; }
+#snc-root .snc-ring-1 { width: 256px; height: 256px; right: -60px; bottom: -90px; }
+#snc-root .snc-ring-2 { width: 176px; height: 176px; right: -20px; bottom: -50px; }
+#snc-root .snc-ring-3 { width: 112px; height: 112px; right: 20px; bottom: -10px; }
+#snc-root .snc-watermark { position: absolute; top: 16px; right: 24px; width: 72px; height: 72px; opacity: .07; pointer-events: none; }
+#snc-root .snc-preview-content { position: relative; display: flex; flex-direction: column; gap: 24px; padding: 32px 24px; }
+#snc-root .snc-preview-label { display: flex; align-items: center; gap: 8px; opacity: .8; }
+#snc-root .snc-preview-label span { color: #53eafd; font-size: 13px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; }
+#snc-root .snc-preview-title { margin: 0; color: #fff; font-size: 34px; font-weight: 700; line-height: 1.25; }
+#snc-root .snc-preview-desc { margin: 0; max-width: 576px; color: #cefafe; opacity: .8; font-size: 15px; line-height: 1.6; }
+#snc-root .snc-btn-primary {
+  display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; border: none; border-radius: 999px;
+  padding: 14px 26px; background: linear-gradient(165deg, #22d3ee 0%, #0ea5e9 100%); color: #071a2e;
+  font-size: 14px; font-weight: 600; box-shadow: 0 4px 10px rgba(34,211,238,.3);
+}
+#snc-root .snc-btn-primary:hover { filter: brightness(1.05); }
+
+/* ---------- 자세히보기 모달 ---------- */
+#snc-root .snc-overlay {
+  display: none; position: fixed; inset: 0; z-index: 999998; background: rgba(0,0,0,.6);
+  padding: 24px; overflow-y: auto; align-items: flex-start; justify-content: center;
+}
+#snc-root .snc-overlay.snc-open { display: flex; }
+#snc-root .snc-panel {
+  position: relative; width: 100%; max-width: 698px; margin: 24px auto; background: #222; border-radius: 17px;
+  padding: 25px; display: flex; flex-direction: column; gap: 20px; color: #ccc;
+}
+#snc-root .snc-close {
+  position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border: none; border-radius: 50%;
+  background: rgba(255,255,255,.08); color: #ccc; font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center;
+}
+#snc-root .snc-close:hover { background: rgba(255,255,255,.16); }
+
+#snc-root .snc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
+#snc-root .snc-header h3 { margin: 0 0 6px; color: #fff; font-size: 26px; font-weight: 700; }
+#snc-root .snc-header-sub { font-size: 13px; color: #aaa; }
+#snc-root .snc-header-sub .snc-sep { color: #555; margin: 0 8px; }
+#snc-root .snc-bookmark-btn { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; padding: 7px 13px; background: transparent; color: #fff; font-size: 13px; }
+#snc-root .snc-bookmark-btn:hover { background: rgba(255,255,255,.06); }
+
+#snc-root .snc-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+#snc-root .snc-stat-card { background: #2a2a2a; border-radius: 14px; padding: 15px; }
+#snc-root .snc-stat-card .snc-stat-label { color: #aaa; font-size: 11px; margin-bottom: 7px; }
+#snc-root .snc-stat-card .snc-stat-value { color: #fff; font-size: 21px; font-weight: 700; }
+
+#snc-root .snc-section { display: flex; flex-direction: column; gap: 10px; }
+#snc-root .snc-section-head { display: flex; align-items: center; gap: 8px; }
+#snc-root .snc-section-head h4 { margin: 0; color: #fff; font-size: 15px; font-weight: 600; }
+#snc-root .snc-section-head .snc-muted { color: #888; font-size: 12px; }
+#snc-root .snc-dot { flex-shrink: 0; width: 11px; height: 11px; border-radius: 3px; background: #4a90d9; }
+#snc-root .snc-desc-text { margin: 0; font-size: 13px; line-height: 1.7; color: #ccc; }
+#snc-root .snc-more-btn { align-self: flex-start; border: none; background: none; color: #7aafd4; font-size: 13px; text-decoration: underline; padding: 0; }
+
+#snc-root .snc-career-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+#snc-root .snc-career-card { border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 11px; }
+#snc-root .snc-career-card.snc-blue { background: #1a3a5c; }
+#snc-root .snc-career-card.snc-gray { background: #2a2a2a; }
+#snc-root .snc-career-list { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+#snc-root .snc-career-card.snc-blue .snc-career-list .snc-k { color: #7aafd4; }
+#snc-root .snc-career-card.snc-blue .snc-career-list .snc-v { color: #c8d8e8; }
+#snc-root .snc-career-card.snc-gray .snc-career-list .snc-k { color: #888; }
+#snc-root .snc-career-card.snc-gray .snc-career-list .snc-v { color: #ccc; }
+#snc-root .snc-major-link { align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; border: none; background: none; color: #7aafd4; font-size: 13px; text-decoration: underline; padding: 0; }
+
+#snc-root .snc-salary-track { position: relative; height: 6px; border-radius: 999px; background: #3a3a3a; margin-top: 8px; }
+#snc-root .snc-salary-dot { position: absolute; top: 50%; width: 15px; height: 15px; border-radius: 50%; background: #4a90d9; transform: translate(-50%, -50%); box-shadow: 0 3px 6px rgba(28,57,142,.4); }
+#snc-root .snc-salary-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #aaa; }
+
+#snc-root .snc-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+#snc-root .snc-chip { border: 1px solid rgba(255,255,255,.1); border-radius: 999px; background: #2a2a2a; color: #fff; font-size: 13px; padding: 7px 16px; }
+#snc-root .snc-chip:hover { background: #333; }
+
+#snc-root .snc-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.1); }
+#snc-root .snc-source { color: #666; font-size: 11px; }
+#snc-root .snc-chatbot-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,.2); border-radius: 10px; padding: 9px 16px; background: transparent; color: #fff; font-size: 13px; }
+#snc-root .snc-chatbot-btn:hover { background: rgba(255,255,255,.06); }
+
+#snc-root .snc-loading, #snc-root .snc-error { padding: 40px 16px; text-align: center; color: #888; font-size: 14px; }
+#snc-root .snc-error { color: #e2725b; }
+
+@media (max-width: 640px) {
+  #snc-root .snc-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  #snc-root .snc-career-grid { grid-template-columns: 1fr; }
+  #snc-root .snc-preview-title { font-size: 26px; }
+}
+</style>
+
+<div class="snc-preview-card" id="sncPreviewCard">
+  <div class="snc-ring snc-ring-1"></div>
+  <div class="snc-ring snc-ring-2"></div>
+  <div class="snc-ring snc-ring-3"></div>
+  <svg class="snc-watermark" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M48 88V32" stroke="#A2F4FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M20 48H8C8 58.6087 12.2143 68.7828 19.7157 76.2843C27.2172 83.7857 37.3913 88 48 88C58.6087 88 68.7828 83.7857 76.2843 76.2843C83.7857 68.7828 88 58.6087 88 48H76" stroke="#A2F4FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M48 32C54.6274 32 60 26.6274 60 20C60 13.3726 54.6274 8 48 8C41.3726 8 36 13.3726 36 20C36 26.6274 41.3726 32 48 32Z" stroke="#A2F4FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="snc-preview-content">
+    <div class="snc-preview-label">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.25 3.75C1.625 4.0625 2 4.375 2.8125 4.375C4.375 4.375 4.375 3.125 5.9375 3.125C7.5625 3.125 7.4375 4.375 9.0625 4.375C10.625 4.375 10.625 3.125 12.1875 3.125C13 3.125 13.375 3.4375 13.75 3.75" stroke="#53EAFD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.25 7.5C1.625 7.8125 2 8.125 2.8125 8.125C4.375 8.125 4.375 6.875 5.9375 6.875C7.5625 6.875 7.4375 8.125 9.0625 8.125C10.625 8.125 10.625 6.875 12.1875 6.875C13 6.875 13.375 7.1875 13.75 7.5" stroke="#53EAFD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.25 11.25C1.625 11.5625 2 11.875 2.8125 11.875C4.375 11.875 4.375 10.625 5.9375 10.625C7.5625 10.625 7.4375 11.875 9.0625 11.875C10.625 11.875 10.625 10.625 12.1875 10.625C13 10.625 13.375 10.9375 13.75 11.25" stroke="#53EAFD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>오늘의 직업 탐색</span>
+    </div>
+    <h2 class="snc-preview-title" id="sncPreviewTitle">불러오는 중…</h2>
+    <p class="snc-preview-desc" id="sncPreviewDesc"></p>
+    <button class="snc-btn-primary" id="sncOpenDetailBtn" type="button">
+      자세히 알아보기
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.33333 8H12.6667" stroke="#071A2E" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 3.33333L12.6667 8L8 12.6667" stroke="#071A2E" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="snc-overlay" id="sncOverlay" aria-hidden="true">
+  <div class="snc-panel" role="dialog" aria-modal="true">
+    <button class="snc-close" id="sncCloseBtn" type="button" aria-label="닫기">×</button>
+    <div id="sncPanelBody"><div class="snc-loading">불러오는 중…</div></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ===== 빌드 타임에 build.py가 채워넣는 값들 ===== */
+  var SNC_WORKNET_API_KEY = "__WORKNET_API_KEY__";
+  var SNC_WHITELIST = /*__SNC_WHITELIST_JSON__*/[];
+
+  /*
+   * ===== 워크넷 오픈API 연동 현황 (2026-07-25, 둘 다 실제 curl 검증 완료) =====
+   * 1) 직업사전 검색(목록) — 직업명으로 검색해 직업코드(dJobCd)를 얻는다.
+   *    https://www.work24.go.kr/cm/openApi/call/wk/callOpenApiSvcInfo212L50.do
+   *    필수: authKey, returnType=XML, target=dJobCD, startPage, display, srchType=K, keyword
+   * 2) 직업정보 상세 — dtlGb=1(요약: 하는일/되는길/임금/전망/만족도/흥미/능력/지식 대부분 포함),
+   *    dtlGb=3(교육/자격/훈련 - 학력 분포)만 추가로 사용.
+   *    https://www.work24.go.kr/cm/openApi/call/wk/callOpenApiSvcInfo212D01.do
+   *    필수: authKey, returnType=XML, target=JOBDTL, jobGb=1, jobCd, dtlGb
+   * CORS 완전 개방 확인됨(Access-Control-Allow-Origin: *) → 프록시 없이 브라우저에서 직접 호출.
+   * 주의(실제로 확인된 데이터 한계): "유사 명칭"·"경력" 항목은 이 API에 대응 필드가 없어
+   * 항상 폴백 문구로 표시됨. 또한 세세분류 직업코드 중 상세 데이터가 비어있는 경우가 실제로
+   * 있음(예: 도선사) — 그런 경우 각 필드가 "데이터 준비 중"으로 정상적으로 폴백된다.
+   */
+  var SNC_LIST_ENDPOINT = 'https://www.work24.go.kr/cm/openApi/call/wk/callOpenApiSvcInfo212L50.do';
+  var SNC_DETAIL_ENDPOINT = 'https://www.work24.go.kr/cm/openApi/call/wk/callOpenApiSvcInfo212D01.do';
+  var SNC_DETAIL_CACHE = {};
+
+  function sncFetchJobList(keyword) {
+    var url = SNC_LIST_ENDPOINT +
+      '?authKey=' + encodeURIComponent(SNC_WORKNET_API_KEY) +
+      '&returnType=XML&target=dJobCD&startPage=1&display=10&srchType=K' +
+      '&keyword=' + encodeURIComponent(keyword);
+    return fetch(url)
+      .then(function (res) { return res.text(); })
+      .then(function (xmlText) {
+        var xml = new DOMParser().parseFromString(xmlText, 'application/xml');
+        if (xml.querySelector('parsererror')) throw new Error('워크넷 응답 파싱 실패');
+        var nodes = xml.getElementsByTagName('dJobList');
+        var results = [];
+        for (var i = 0; i < nodes.length; i++) {
+          var nmEl = nodes[i].getElementsByTagName('dJobNm')[0];
+          var cdEl = nodes[i].getElementsByTagName('dJobCd')[0];
+          results.push({ jobNm: nmEl ? nmEl.textContent : '', jobCd: cdEl ? cdEl.textContent : '' });
+        }
+        return results;
+      });
+  }
+
+  function sncFetchDetailXml(jobCd, dtlGb) {
+    var url = SNC_DETAIL_ENDPOINT +
+      '?authKey=' + encodeURIComponent(SNC_WORKNET_API_KEY) +
+      '&returnType=XML&target=JOBDTL&jobGb=1' +
+      '&jobCd=' + encodeURIComponent(jobCd) + '&dtlGb=' + dtlGb;
+    return fetch(url).then(function (res) { return res.text(); }).then(function (xmlText) {
+      return new DOMParser().parseFromString(xmlText, 'application/xml');
+    });
+  }
+
+  // 루트 태그 이름과 자식 태그 이름이 같은 경우가 있어(예: <jobSum><jobSum>...) 항상 documentElement의
+  // "자손"만 뒤진다 — 안 그러면 루트 자기 자신이 먼저 잡혀서 빈 값으로 오인될 수 있음.
+  function sncXmlTag(xml, tag) {
+    var el = xml.documentElement && xml.documentElement.getElementsByTagName(tag)[0];
+    return el ? el.textContent.trim() : '';
+  }
+  function sncXmlTagAll(xml, tag) {
+    var els = xml.documentElement ? xml.documentElement.getElementsByTagName(tag) : [];
+    var out = [];
+    for (var i = 0; i < els.length; i++) {
+      var t = els[i].textContent.trim();
+      if (t) out.push(t);
+    }
+    return out;
+  }
+
+  // "사회형(Social)(93)/현실형(Realistic)(70)" → ["사회형", "현실형"]
+  function sncStripScores(text, max) {
+    if (!text) return [];
+    return text.split('/').map(function (s) { return s.replace(/\(.*$/, '').trim(); })
+      .filter(Boolean).slice(0, max || 3);
+  }
+
+  function sncFormatWon(manwon) {
+    if (manwon >= 10000) return (Math.round(manwon / 1000) / 10) + '억';
+    return (Math.round(manwon / 100) / 10) + '천';
+  }
+
+  // "...하위(25%) 4000만원, 평균(50%) 4550만원, 상위(25%) 5500만원" 형태 문자열 파싱
+  function sncParseWage(text) {
+    if (!text) return null;
+    var m = text.match(/하위\s*\(25%\)\s*([\d,]+)\s*만원[\s\S]*?평균\s*\(50%\)\s*([\d,]+)\s*만원[\s\S]*?상위\s*\(25%\)\s*([\d,]+)\s*만원/);
+    if (!m) return null;
+    var min = parseInt(m[1].replace(/,/g, ''), 10);
+    var median = parseInt(m[2].replace(/,/g, ''), 10);
+    var max = parseInt(m[3].replace(/,/g, ''), 10);
+    if (!(max > min)) return null;
+    return {
+      minLabel: sncFormatWon(min), maxLabel: sncFormatWon(max),
+      medianLabel: sncFormatWon(median) + '+',
+      medianPct: Math.min(1, Math.max(0, (median - min) / (max - min)))
+    };
+  }
+
+  // "증가(32%) 현상유지(43%) 감소(23%)" → {status:'유지', narrative: 원문}
+  function sncParseProspect(text) {
+    if (!text) return null;
+    var re = /(증가|현상유지|감소)\((\d+)%\)/g, m, best = null;
+    while ((m = re.exec(text))) {
+      if (!best || parseInt(m[2], 10) > best.pct) best = { label: m[1], pct: parseInt(m[2], 10) };
+    }
+    if (!best) return { status: '유지', narrative: text };
+    return { status: best.label === '현상유지' ? '유지' : best.label, narrative: text };
+  }
+
+  // edubg 블록(학력별 종사자 비중 %)에서 최빈 학력을 뽑는다.
+  function sncEducationFromEdubg(xml) {
+    var map = [
+      ['edubgMgraduUndr', '중졸 이하'], ['edubgHgradu', '고졸'], ['edubgCgraduUndr', '전문대졸'],
+      ['edubgUgradu', '대졸'], ['edubgGgradu', '대학원졸'], ['edubgDgradu', '박사']
+    ];
+    var best = null;
+    map.forEach(function (pair) {
+      var v = parseFloat(sncXmlTag(xml, pair[0]));
+      if (!isNaN(v) && (!best || v > best.v)) best = { v: v, label: pair[1] };
+    });
+    return best && best.v > 0 ? best.label : '';
+  }
+
+  function sncFetchJobDetail(jobNm) {
+    if (SNC_DETAIL_CACHE[jobNm]) return Promise.resolve(SNC_DETAIL_CACHE[jobNm]);
+
+    return sncFetchJobList(jobNm).then(function (list) {
+      if (!list.length) throw new Error('"' + jobNm + '"에 대한 검색 결과가 없습니다.');
+      var exact = list.filter(function (j) { return j.jobNm === jobNm; })[0];
+      var jobCd = (exact || list[0]).jobCd;
+
+      return Promise.all([sncFetchDetailXml(jobCd, 1), sncFetchDetailXml(jobCd, 3)]).then(function (xmls) {
+        var x1 = xmls[0], x3 = xmls[1];
+        var lrcl = sncXmlTag(x1, 'jobLrclNm');
+        var smcl = sncXmlTag(x1, 'jobSmclNm') || sncXmlTag(x1, 'jobMdclNm');
+
+        var job = {
+          jobNm: jobNm,
+          similarNames: null, // 워크넷 API에 대응 필드 없음 (항상 폴백 표시)
+          categoryPath: (lrcl && smcl) ? (lrcl + ' › ' + smcl) : null,
+          wage: sncParseWage(sncXmlTag(x1, 'sal')),
+          outlook: sncParseProspect(sncXmlTag(x1, 'jobProspect')),
+          satisfaction: sncXmlTag(x1, 'jobSatis') || null,
+          education: sncEducationFromEdubg(x3) || null,
+          description: sncXmlTag(x1, 'jobSum'),
+          relatedMajors: sncXmlTagAll(x1, 'majorNm'),
+          relatedCerts: sncXmlTagAll(x1, 'certNm'),
+          career: null, // 워크넷 API에 대응 필드 없음 (항상 폴백 표시)
+          interests: sncStripScores(sncXmlTag(x1, 'jobIntrst'), 2),
+          abilities: sncStripScores(sncXmlTag(x1, 'jobAbil'), 3),
+          knowledge: sncStripScores(sncXmlTag(x1, 'knowldg'), 3),
+          relatedJobs: sncXmlTagAll(x1, 'jobNm').filter(function (n) { return n && n !== jobNm; }).slice(0, 4)
+        };
+        SNC_DETAIL_CACHE[jobNm] = job;
+        return job;
+      });
+    });
+  }
+
+  function sncOr(val, fallback) {
+    if (val === undefined || val === null || val === '') return fallback || '데이터 준비 중';
+    if (Array.isArray(val) && val.length === 0) return fallback || '데이터 준비 중';
+    return val;
+  }
+
+  function sncJoin(arr) { return (arr && arr.length) ? arr.join(', ') : null; }
+
+  function sncOutlookColor(status) {
+    if (status === '증가') return '#4caf7d';
+    if (status === '감소') return '#e2725b';
+    return '#4caf7d';
+  }
+  function sncOutlookArrow(status) {
+    if (status === '증가') return '↑';
+    if (status === '감소') return '↓';
+    return '→';
+  }
+
+  function sncEscapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function sncPickTodayJob() {
+    if (!SNC_WHITELIST.length) return null;
+    // 새로고침할 때마다 무작위로 하나 뽑는다 (하루 고정 노출 방식에서 변경됨).
+    return SNC_WHITELIST[Math.floor(Math.random() * SNC_WHITELIST.length)];
+  }
+
+  function sncRenderPreview(jobNm) {
+    var titleEl = document.getElementById('sncPreviewTitle');
+    var descEl = document.getElementById('sncPreviewDesc');
+    if (!jobNm) { titleEl.textContent = '데이터 준비 중'; return; }
+    titleEl.textContent = jobNm;
+    descEl.textContent = '불러오는 중…';
+
+    sncFetchJobDetail(jobNm).then(function (detail) {
+      var firstSentence = (detail.description || '').split(/(?<=\.)\s/)[0] || detail.description;
+      descEl.textContent = firstSentence || '';
+    }).catch(function (err) {
+      console.warn('[snc] 오늘의 직업 정보를 불러오지 못했습니다:', err);
+      descEl.textContent = '';
+    });
+  }
+
+  function sncRenderStatCard(label, value, color) {
+    return '<div class="snc-stat-card"><div class="snc-stat-label">' + sncEscapeHtml(label) +
+      '</div><div class="snc-stat-value"' + (color ? ' style="color:' + color + '"' : '') + '>' +
+      sncEscapeHtml(value) + '</div></div>';
+  }
+
+  function sncDescTruncated(text) {
+    var LIMIT = 90;
+    if (!text || text.length <= LIMIT) {
+      return '<p class="snc-desc-text" id="sncDescFull">' + sncEscapeHtml(sncOr(text)) + '</p>';
+    }
+    var shortText = text.slice(0, LIMIT) + '…';
+    return '<p class="snc-desc-text" id="sncDescFull" data-full="' + sncEscapeHtml(text) + '" ' +
+      'data-short="' + sncEscapeHtml(shortText) + '" data-expanded="0">' + sncEscapeHtml(shortText) +
+      '</p><button class="snc-more-btn" id="sncMoreBtn" type="button">더보기</button>';
+  }
+
+  function sncBuildDetailHtml(job) {
+    var outlookColor = sncOutlookColor(job.outlook && job.outlook.status);
+    var outlookArrow = sncOutlookArrow(job.outlook && job.outlook.status);
+    var dotSvg = '<svg class="snc-dot" viewBox="0 0 12 12"><rect width="12" height="12" rx="3" fill="#4A90D9"/></svg>';
+
+    var html = '';
+    html += '<div class="snc-header">';
+    html += '  <div><h3>' + sncEscapeHtml(job.jobNm) + '</h3>';
+    html += '    <div class="snc-header-sub">' + sncEscapeHtml(sncOr(job.similarNames, '유사 명칭 정보 없음'));
+    html += '      <span class="snc-sep">|</span>' + sncEscapeHtml(sncOr(job.categoryPath, '분류 정보 없음')) + '</div>';
+    html += '  </div>';
+    html += '  <button class="snc-bookmark-btn" id="sncBookmarkBtn" type="button">';
+    html += '    <svg width="14" height="14" viewBox="0 0 14.5 14.5" fill="none"><path d="M11.5126 12.724L7.27126 10.3004L3.02994 12.724V3.02953C3.02994 2.70814 3.15761 2.39991 3.38487 2.17266C3.61213 1.9454 3.92036 1.81773 4.24175 1.81773H10.3008C10.6222 1.81773 10.9304 1.9454 11.1576 2.17266C11.3849 2.39991 11.5126 2.70814 11.5126 3.02953V12.724Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    html += '    짐</button>';
+    html += '</div>';
+
+    html += '<div class="snc-stats-grid">';
+    html += sncRenderStatCard('평균 연봉(중위)', sncOr(job.wage && job.wage.medianLabel));
+    html += sncRenderStatCard('일자리 전망', sncOr(job.outlook && job.outlook.status) + ' ' + outlookArrow, outlookColor);
+    html += sncRenderStatCard('직업 만족도', (job.satisfaction ? job.satisfaction + '%' : '데이터 준비 중'));
+    html += sncRenderStatCard('필요 학력', sncOr(job.education));
+    html += '</div>';
+
+    html += '<div class="snc-section">';
+    html += '  <div class="snc-section-head">' + dotSvg + '<h4>하는 일</h4><span class="snc-muted">· 수행직무</span></div>';
+    html += sncDescTruncated(job.description);
+    html += '</div>';
+
+    html += '<div class="snc-career-grid">';
+    html += '  <div class="snc-career-card snc-blue">';
+    html += '    <div class="snc-section-head">' + dotSvg + '<h4>되는 길</h4></div>';
+    html += '    <div class="snc-career-list">';
+    html += '      <div><span class="snc-k">관련 학과 · </span><span class="snc-v">' + sncEscapeHtml(sncOr(sncJoin(job.relatedMajors))) + '</span></div>';
+    html += '      <div><span class="snc-k">관련 자격 · </span><span class="snc-v">' + sncEscapeHtml(sncOr(sncJoin(job.relatedCerts))) + '</span></div>';
+    html += '      <div><span class="snc-k">경력 · </span><span class="snc-v">' + sncEscapeHtml(sncOr(job.career)) + '</span></div>';
+    html += '    </div>';
+    html += '    <button class="snc-major-link" id="sncMajorLinkBtn" type="button">관련 학과 자세히 보기 ↗</button>';
+    html += '  </div>';
+    html += '  <div class="snc-career-card snc-gray">';
+    html += '    <div class="snc-section-head">' + dotSvg + '<h4>나와 맞을까</h4></div>';
+    html += '    <div class="snc-career-list">';
+    html += '      <div><span class="snc-k">흥미 · </span><span class="snc-v">' + sncEscapeHtml(sncOr(sncJoin(job.interests))) + '</span></div>';
+    html += '      <div><span class="snc-k">필요 능력 · </span><span class="snc-v">' + sncEscapeHtml(sncOr(sncJoin(job.abilities))) + '</span></div>';
+    html += '      <div><span class="snc-k">지식 · </span><span class="snc-v">' + sncEscapeHtml(sncOr(sncJoin(job.knowledge))) + '</span></div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '</div>';
+
+    html += '<div class="snc-section">';
+    html += '  <div class="snc-section-head">' + dotSvg + '<h4>전망과 보상</h4></div>';
+    html += '  <p class="snc-muted" style="margin:0;font-size:12px;">연봉 분포 (하위 25% / 중위 / 상위 25%) · ' + sncEscapeHtml(sncOr(job.outlook && job.outlook.narrative, '전망 정보 준비 중')) + '</p>';
+    if (job.wage) {
+      html += '  <div class="snc-salary-track"><div class="snc-salary-dot" style="left:' + (job.wage.medianPct * 100) + '%"></div></div>';
+      html += '  <div class="snc-salary-labels"><span>' + sncEscapeHtml(job.wage.minLabel) + '</span><span>' + sncEscapeHtml(job.wage.maxLabel) + '</span></div>';
+    } else {
+      html += '  <p class="snc-muted" style="margin:6px 0 0;font-size:12px;">임금 데이터 준비 중</p>';
+    }
+    html += '</div>';
+
+    html += '<div class="snc-section">';
+    html += '  <div class="snc-section-head">' + dotSvg + '<h4>이런 직업도 있어요</h4><span class="snc-muted">· 관련 직업</span></div>';
+    html += '  <div class="snc-chip-row" id="sncRelatedJobsRow">';
+    (job.relatedJobs || []).forEach(function (rj) {
+      html += '<button class="snc-chip" data-job="' + sncEscapeHtml(rj) + '" type="button">' + sncEscapeHtml(rj) + '</button>';
+    });
+    if (!job.relatedJobs || !job.relatedJobs.length) html += '<span class="snc-muted">데이터 준비 중</span>';
+    html += '  </div>';
+    html += '</div>';
+
+    html += '<div class="snc-footer">';
+    html += '  <span class="snc-source">출처 · 워크넷 한국직업정보(KNOW)</span>';
+    html += '  <button class="snc-chatbot-btn" id="sncChatbotBtn" type="button">챗봇에게 물어보기</button>';
+    html += '</div>';
+
+    return html;
+  }
+
+  function sncBindPanelEvents(job) {
+    var moreBtn = document.getElementById('sncMoreBtn');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', function () {
+        var textEl = document.getElementById('sncDescFull');
+        var expanded = textEl.getAttribute('data-expanded') === '1';
+        textEl.textContent = expanded ? textEl.getAttribute('data-short') : textEl.getAttribute('data-full');
+        textEl.setAttribute('data-expanded', expanded ? '0' : '1');
+        moreBtn.textContent = expanded ? '더보기' : '접기';
+      });
+    }
+
+    var majorBtn = document.getElementById('sncMajorLinkBtn');
+    if (majorBtn) {
+      majorBtn.addEventListener('click', function () {
+        window.alert('관련 학과 상세 연결은 준비 중입니다 (커리어넷 학과정보 API 연동 예정).');
+      });
+    }
+
+    var chatBtn = document.getElementById('sncChatbotBtn');
+    if (chatBtn) {
+      chatBtn.addEventListener('click', function () {
+        if (typeof window.sncAskChatbot === 'function') {
+          window.sncAskChatbot(job.jobNm);
+        } else {
+          console.warn('[snc] 챗봇 연동 함수(window.sncAskChatbot)가 아직 없습니다. jobNm=', job.jobNm);
+          window.alert('챗봇 연결은 준비 중입니다.');
+        }
+      });
+    }
+
+    var relatedRow = document.getElementById('sncRelatedJobsRow');
+    if (relatedRow) {
+      relatedRow.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-job]');
+        if (!btn) return;
+        sncOpenDetail(btn.getAttribute('data-job'));
+      });
+    }
+  }
+
+  function sncOpenDetail(jobNm) {
+    var overlay = document.getElementById('sncOverlay');
+    var body = document.getElementById('sncPanelBody');
+    overlay.classList.add('snc-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    body.innerHTML = '<div class="snc-loading">불러오는 중…</div>';
+
+    sncFetchJobDetail(jobNm).then(function (job) {
+      body.innerHTML = sncBuildDetailHtml(job);
+      sncBindPanelEvents(job);
+    }).catch(function (err) {
+      body.innerHTML = '<div class="snc-error">직업 정보를 불러오지 못했습니다.<br>' + sncEscapeHtml(err.message || '') + '</div>';
+    });
+  }
+
+  function sncCloseDetail() {
+    var overlay = document.getElementById('sncOverlay');
+    overlay.classList.remove('snc-open');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  function sncInit() {
+    var todayJobEntry = sncPickTodayJob();
+    var todayJobNm = todayJobEntry ? todayJobEntry.jobNm : null;
+    sncRenderPreview(todayJobNm);
+
+    document.getElementById('sncOpenDetailBtn').addEventListener('click', function () {
+      sncOpenDetail(todayJobNm);
+    });
+    document.getElementById('sncCloseBtn').addEventListener('click', sncCloseDetail);
+    document.getElementById('sncOverlay').addEventListener('click', function (e) {
+      if (e.target.id === 'sncOverlay') sncCloseDetail();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') sncCloseDetail();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sncInit);
+  } else {
+    sncInit();
+  }
+})();
+</script>
+</div>
