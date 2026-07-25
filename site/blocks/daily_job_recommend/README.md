@@ -10,11 +10,16 @@
    ```bash
    python3 site/blocks/daily_job_recommend/build.py
    ```
-3. `dist/daily_job_block.html`이 생성됨. **이 파일 전체를 복사해서 디디쌤 코드블럭에 붙여넣기.**
-   (자동 배포 아님 — 항상 수동으로 붙여넣어야 함)
+3. 산출물 2종이 `dist/`에 생성됨 (`.env`의 실 API 키가 그대로 박혀서 나오므로 둘 다 git-ignored):
+   - `daily_job_block.html` — 통짜 코드블럭. 디디쌤에 그대로 붙여넣는 방식.
+   - **`loader.html` (권장)** — 짧은 로더 스크립트. GitHub의 `src/template.html` +
+     `data/ocean_jobs_whitelist.json`을 실행 시점에 fetch해와서 렌더링한다.
+     **디디쌤에는 이걸 붙여넣을 것.** 이후 `src/template.html`을 GitHub main에 수정·push하면
+     디디쌤에 다시 붙여넣지 않아도 바로 반영됨 (빌드는 API 키를 이 스크립트 안에 넣기 위해서만 필요).
 
-`dist/`는 실제 API 키가 그대로 박혀서 나오는 결과물이라 `.gitignore`에 포함되어 있음.
-소스 수정 후에는 반드시 다시 빌드해서 최신 파일을 붙여넣을 것.
+⚠️ `loader.html` 방식은 디디쌤 발행 사이트가 `raw.githubusercontent.com` 요청을 허용하는지
+아직 실제 배포로 검증 전임(`docs/didisam-constraints.md`의 jsdelivr 차단 사례 참고 — 다른 도메인이라
+막힐 가능성은 낮지만 검증 필요). 안 되면 `daily_job_block.html`(통짜 붙여넣기)로 대체할 것.
 
 ## 현재 상태 (2026-07-25)
 

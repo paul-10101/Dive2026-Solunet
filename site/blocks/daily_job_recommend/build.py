@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """
-src/template.html + data/*.json -> dist/daily_job_block.html 생성.
+두 가지 산출물을 만든다 (둘 다 dist/, git-ignored — 실제 API 키가 그대로 박혀서 나옴):
 
-- .env(레포 루트)의 WORKNET_API_KEY를 읽어 템플릿의 __WORKNET_API_KEY__ 플레이스홀더에 치환한다.
-- ocean_jobs_whitelist.json(오늘의 직업 로테이션 대상)을 JS 상수로 인라인한다
-  (디디쌤 코드블럭은 정적 파일 하나만 붙여넣는 구조라 런타임에 별도 JSON을 fetch할 수 없음).
+1. dist/daily_job_block.html — 통짜 코드블럭. 디디쌤에 그대로 붙여넣는 기존 방식.
+2. dist/loader.html — GitHub raw로 src/template.html + data/ocean_jobs_whitelist.json을
+   fetch해와서 실행 시점에 플레이스홀더를 채우는 작은 로더. 디디쌤에는 이 짧은 스크립트만
+   붙여넣으면 되고, 이후 template.html을 GitHub에서 수정하면 재배포 없이 반영됨.
+   (레포에는 항상 플레이스홀더만 존재 — 실 키가 커밋되는 일 없음)
+
+- .env(레포 루트)의 WORKNET_API_KEY를 읽어 __WORKNET_API_KEY__ 플레이스홀더에 치환한다.
 - 상세 데이터는 mock이 아니라 워크넷 오픈API를 브라우저에서 직접 실시간 호출한다(src/template.html 참고).
 - .env는 git에 커밋되지 않으므로, 이 스크립트는 붙여넣기 직전에 로컬에서 매번 실행해야 한다.
 """
@@ -16,8 +20,10 @@ ROOT = Path(__file__).resolve().parent
 REPO_ROOT = ROOT.parents[2]
 ENV_PATH = REPO_ROOT / ".env"
 TEMPLATE_PATH = ROOT / "src" / "template.html"
+LOADER_TEMPLATE_PATH = ROOT / "src" / "loader_template.html"
 WHITELIST_PATH = ROOT / "data" / "ocean_jobs_whitelist.json"
 OUT_PATH = ROOT / "dist" / "daily_job_block.html"
+LOADER_OUT_PATH = ROOT / "dist" / "loader.html"
 PREVIEW_PATH = ROOT / "dist" / "preview.html"
 
 PREVIEW_WRAPPER = """<!DOCTYPE html>
@@ -73,6 +79,16 @@ def main():
     print(f"로컬 확인용: {PREVIEW_PATH} (브라우저로 이 파일을 열어서 테스트할 것)")
     if size_kb > 30:
         print("⚠️  30KB를 초과했습니다. docs/didisam-constraints.md 4번 항목 참고 (스크립트가 잘릴 수 있음).")
+
+    loader_html = LOADER_TEMPLATE_PATH.read_text(encoding="utf-8")
+    loader_html = loader_html.replace("__LOADER_WORKNET_API_KEY__", api_key)
+    # loader.html은 런타임에 fetch해온 template.html 안의 __WORKNET_API_KEY__ 문자열을
+    # 찾아 치환하는 코드 자체를 담고 있어야 하므로, 그 리터럴은 여기서 건드리면 안 된다.
+    if "__LOADER_WORKNET_API_KEY__" in loader_html:
+        raise SystemExit("loader.html에 __LOADER_WORKNET_API_KEY__ 플레이스홀더가 남아있습니다.")
+    LOADER_OUT_PATH.write_text(loader_html, encoding="utf-8")
+    print(f"생성 완료(GitHub 로더 방식): {LOADER_OUT_PATH} "
+          f"({len(loader_html.encode('utf-8')) / 1024:.1f} KB) — 이 짧은 스크립트만 디디쌤에 붙여넣으면 됨")
 
 
 if __name__ == "__main__":
