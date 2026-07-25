@@ -1,0 +1,205 @@
+<div id="shd-cbt-root" style="font-family: 'Malgun Gothic', sans-serif; max-width: 800px; margin: 20px auto; color: #1a1a2e;">
+
+  <style>
+    #shd-cbt-root .shd-tabs { display:flex; gap:6px; margin-bottom:16px; border-bottom:2px solid #e0e0e0; }
+    #shd-cbt-root .shd-tab-btn { padding:10px 16px; background:none; border:none; cursor:pointer; font-size:14px; font-weight:600; color:#888; border-bottom:3px solid transparent; }
+    #shd-cbt-root .shd-tab-btn.active { color:#0891b2; border-bottom-color:#0891b2; }
+    #shd-cbt-root .shd-panel { display:none; }
+    #shd-cbt-root .shd-panel.active { display:block; }
+    #shd-cbt-root .shd-q-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:14px; }
+    #shd-cbt-root .shd-q-tag { display:inline-block; font-size:11px; background:#0891b2; color:#fff; padding:2px 8px; border-radius:4px; margin-bottom:6px; }
+    #shd-cbt-root .shd-q-text { font-weight:600; margin:6px 0 10px; line-height:1.5; }
+    #shd-cbt-root .shd-opt { display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:6px; background:#fff; border:1px solid #d1d5db; border-radius:8px; cursor:pointer; font-size:13px; }
+    #shd-cbt-root .shd-opt.selected { border-color:#0891b2; background:#ecfeff; font-weight:600; }
+    #shd-cbt-root .shd-opt.correct { border-color:#16a34a; background:#f0fdf4; }
+    #shd-cbt-root .shd-opt.wrong { border-color:#dc2626; background:#fef2f2; }
+    #shd-cbt-root .shd-submit-btn { width:100%; padding:14px; background:#0891b2; color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; margin-top:10px; }
+    #shd-cbt-root .shd-submit-btn:hover { background:#0e7490; }
+    #shd-cbt-root .shd-score-row { display:flex; gap:10px; margin-bottom:18px; }
+    #shd-cbt-root .shd-score-box { flex:1; background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:14px; text-align:center; }
+    #shd-cbt-root .shd-score-box .shd-num { font-size:24px; font-weight:800; color:#0891b2; }
+    #shd-cbt-root .shd-score-box .shd-label { font-size:12px; color:#888; margin-top:4px; }
+    #shd-cbt-root table.shd-topic-table { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:13px; }
+    #shd-cbt-root table.shd-topic-table th, #shd-cbt-root table.shd-topic-table td { border:1px solid #e2e8f0; padding:8px; text-align:left; }
+    #shd-cbt-root table.shd-topic-table th { background:#f1f5f9; }
+    #shd-cbt-root .shd-status-good { color:#16a34a; font-weight:700; }
+    #shd-cbt-root .shd-status-warn { color:#d97706; font-weight:700; }
+    #shd-cbt-root .shd-status-bad { color:#dc2626; font-weight:700; }
+    #shd-cbt-root .shd-review-card { border:1px solid #fca5a5; background:#fef2f2; border-radius:10px; padding:14px; margin-bottom:12px; }
+    #shd-cbt-root .shd-explain { background:#fff; border-left:3px solid #0891b2; padding:8px 12px; margin-top:8px; font-size:13px; }
+    #shd-cbt-root .shd-empty { text-align:center; color:#888; padding:30px 0; }
+  </style>
+
+  <h3 style="margin-top:0;">⚓ 해기사(3급 항해사) CBT 실전 모의고사</h3>
+
+  <div class="shd-tabs">
+    <button class="shd-tab-btn active" data-tab="shd-tab-exam" onclick="shdCbtSwitchTab('shd-tab-exam')">📝 문제 풀기</button>
+    <button class="shd-tab-btn" data-tab="shd-tab-result" onclick="shdCbtSwitchTab('shd-tab-result')">📊 채점 및 분석</button>
+    <button class="shd-tab-btn" data-tab="shd-tab-weak" onclick="shdCbtSwitchTab('shd-tab-weak')">🎯 약점 보완</button>
+  </div>
+
+  <div id="shd-tab-exam" class="shd-panel active"></div>
+  <div id="shd-tab-result" class="shd-panel"><div class="shd-empty">먼저 문제를 풀고 제출해주세요.</div></div>
+  <div id="shd-tab-weak" class="shd-panel"><div class="shd-empty">먼저 문제를 풀고 제출해주세요.</div></div>
+
+</div>
+
+<script>
+(function(){
+  var SHD_CBT_DATA = [
+    { id:1, subject:"항해", topic:"자이로컴퍼스 및 지로오차",
+      question:"자이로컴퍼스의 방위와 진방위 사이에 차이가 발생하는 주된 원인 중, 선박의 속력과 위도 변화에 의해 발생하는 오차는?",
+      options:["위도 오차 (Latitude Error)","속력 오차 (Speed Error / Speed-Latitude Error)","동요 오차 (Rolling Error)","가속도 오차 (Acceleration Error)"],
+      answer:2, explanation:"선박의 속력 및 위도 변화에 따라 자이로 축이 일정한 편차를 일으키는 오차를 속력-위도 오차(Speed-Latitude Error)라 합니다." },
+    { id:2, subject:"운용", topic:"복원성 및 GM 계산",
+      question:"배수량이 10,000톤인 선박에서 200톤의 화물을 수직 상방으로 5m 이동시켰을 때, 무게중심(G) 상승량은?",
+      options:["0.05m","0.10m","0.20m","0.50m"],
+      answer:2, explanation:"무게중심 상승량 GG' = (w × d) / W = (200 × 5) / 10,000 = 0.10m 입니다." },
+    { id:3, subject:"법규", topic:"국제해상충돌방지규칙(COLREGs)",
+      question:"COLREGs 제14조에 따라 두 동력선이 서로 정면으로 마주치는 상태(Head-on)에서 취해야 할 피항 동작은?",
+      options:["양 선박 모두 침로를 좌현으로 변경한다.","양 선박 모두 침로를 우현으로 변경한다.","피항선만 우현으로 변침하고 유지선은 침로를 유지한다.","속력을 감속하고 기관을 역전한다."],
+      answer:2, explanation:"제14조(Head-on situation)에 따라 양 선박 모두 상대선을 좌현에 두도록 각자 우현으로 변침하여 좌현 대 좌현으로 통과해야 합니다." },
+    { id:4, subject:"영어", topic:"SMCP 표준해사통신영어",
+      question:"SMCP에서 '본선은 기관에 중대한 고장이 발생하여 조종불능 상태임'을 알릴 때 사용하는 표준 표현은?",
+      options:["I am leaking dangerous cargo.","I am not under command.","I am constrained by my draught.","I require tug assistance immediately."],
+      answer:2, explanation:"조종불능선은 'not under command' 상태를 명시합니다." },
+    { id:5, subject:"운용", topic:"복원성 및 GM 계산",
+      question:"선박의 GM이 음수(-) 상태가 되었을 때 나타나는 가장 대표적인 위험 현상은?",
+      options:["선박의 동요 주기가 극도로 짧아진다.","선박이 횡경사(Loll) 상태에 빠지거나 전복될 위험이 커진다.","선박의 복원력이 최대로 증가한다.","트림(Trim)이 급격하게 선수 경사로 변한다."],
+      answer:2, explanation:"GM이 음수일 경우 초기 복원력을 상실하여 선박이 일정한 기울기로 기울어지는 경사 현상(Angle of Loll)이 발생하고 전복 위험이 생깁니다." },
+    { id:6, subject:"항해", topic:"조석 및 조류",
+      question:"만조와 간조 사이, 조위가 가장 빠르게 변화하는 시점은?",
+      options:["고조 직후","저조 직후","평균 해면을 통과하는 중간 시점","고조와 저조 정시(停時)"],
+      answer:3, explanation:"조석은 사인파형으로 변화하며, 평균 해면을 지나는 중간 시점에서 조위 변화율(유속에 해당)이 최대가 됩니다." },
+    { id:7, subject:"운용", topic:"소화 및 방화설비",
+      question:"기관실 화재 시 CO2(이산화탄소) 고정식 소화설비를 방출하기 전 반드시 확인해야 할 사항은?",
+      options:["기관실 내 전원을 모두 차단했는지","기관실 내 전 인원이 대피했는지","선박의 속력을 최대로 올렸는지","화물창 환기팬을 가동했는지"],
+      answer:2, explanation:"CO2는 질식성 가스이므로 방출 전 반드시 해당 구역의 전 인원 대피 확인 및 경보(사이렌)를 울려야 합니다." },
+    { id:8, subject:"법규", topic:"해상교통안전법 / 등화와 형상물",
+      question:"항행 중인 동력선이 야간에 표시해야 하는 기본 등화가 아닌 것은?",
+      options:["마스트등(Masthead light)","현등(Sidelights)","선미등(Sternlight)","전주등(All-round white light) 단독"],
+      answer:4, explanation:"항행 중인 동력선은 마스트등, 현등, 선미등을 표시해야 하며, 전주등 단독 표시는 정박선 등 다른 상태를 나타냅니다." },
+    { id:9, subject:"영어", topic:"항해 실무 용어",
+      question:"'선박이 예정된 항로를 벗어나 표류하고 있다'는 상황을 가장 적절히 표현한 것은?",
+      options:["The vessel is drifting off her intended course.","The vessel is anchored at the fairway.","The vessel is proceeding as planned.","The vessel is under tow to port."],
+      answer:1, explanation:"'drifting off course'는 표류하며 항로를 이탈하고 있다는 의미의 표준적인 표현입니다." },
+    { id:10, subject:"항해", topic:"레이더 및 ARPA 운용",
+      question:"ARPA에서 CPA(Closest Point of Approach)가 의미하는 것은?",
+      options:["상대선과의 현재 거리","상대선과 가장 가까워지는 최단 접근 거리","본선의 현재 속력","상대선의 진침로"],
+      answer:2, explanation:"CPA는 현재 침로와 속력을 유지할 경우 상대선과 가장 근접하게 되는 예상 최단 거리를 의미하며, 충돌 위험 판단의 핵심 지표입니다." }
+  ];
+
+  var shdCbtAnswers = {};
+  var shdCbtSubmitted = false;
+
+  function shdCbtRenderExam(){
+    var root = document.getElementById('shd-tab-exam');
+    var html = '';
+    SHD_CBT_DATA.forEach(function(q, idx){
+      html += '<div class="shd-q-card">';
+      html += '<span class="shd-q-tag">' + q.subject + ' · ' + q.topic + '</span>';
+      html += '<div class="shd-q-text">Q' + (idx+1) + '. ' + q.question + '</div>';
+      q.options.forEach(function(opt, oi){
+        var optNum = oi + 1;
+        html += '<button type="button" class="shd-opt" data-qid="' + q.id + '" data-opt="' + optNum + '" onclick="shdCbtSelect(' + q.id + ',' + optNum + ')">' + optNum + ') ' + opt + '</button>';
+      });
+      html += '</div>';
+    });
+    html += '<button class="shd-submit-btn" onclick="shdCbtSubmit()">📝 답안 제출 및 채점하기</button>';
+    root.innerHTML = html;
+  }
+
+  window.shdCbtSelect = function(qid, optNum){
+    shdCbtAnswers[qid] = optNum;
+    var buttons = document.querySelectorAll('.shd-opt[data-qid="' + qid + '"]');
+    buttons.forEach(function(b){
+      b.classList.remove('selected');
+      if(parseInt(b.getAttribute('data-opt')) === optNum) b.classList.add('selected');
+    });
+  };
+
+  window.shdCbtSwitchTab = function(tabId){
+    document.querySelectorAll('#shd-cbt-root .shd-tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('#shd-cbt-root .shd-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelector('#shd-cbt-root .shd-tab-btn[data-tab="' + tabId + '"]').classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  };
+
+  window.shdCbtSubmit = function(){
+    shdCbtSubmitted = true;
+    var total = SHD_CBT_DATA.length;
+    var correctCnt = 0;
+    var topicStats = {};
+    var incorrectList = [];
+
+    SHD_CBT_DATA.forEach(function(q){
+      var userAns = shdCbtAnswers[q.id] || null;
+      if(!topicStats[q.topic]) topicStats[q.topic] = { subject:q.subject, total:0, correct:0 };
+      topicStats[q.topic].total++;
+      if(userAns === q.answer){
+        correctCnt++;
+        topicStats[q.topic].correct++;
+      } else {
+        incorrectList.push({ q:q, userAns:userAns });
+      }
+    });
+
+    var scorePct = Math.round((correctCnt / total) * 1000) / 10;
+
+    // 결과 탭 렌더링
+    var resultHtml = '<div class="shd-score-row">';
+    resultHtml += '<div class="shd-score-box"><div class="shd-num">' + total + '</div><div class="shd-label">총 문항 수</div></div>';
+    resultHtml += '<div class="shd-score-box"><div class="shd-num">' + correctCnt + '</div><div class="shd-label">정답 개수</div></div>';
+    resultHtml += '<div class="shd-score-box"><div class="shd-num">' + scorePct + '점</div><div class="shd-label">최종 점수</div></div>';
+    resultHtml += '</div>';
+
+    resultHtml += '<h4>🔍 단원별 정답률</h4>';
+    resultHtml += '<table class="shd-topic-table"><tr><th>과목</th><th>세부 단원</th><th>맞힌 개수</th><th>정답률</th><th>진단</th></tr>';
+    Object.keys(topicStats).forEach(function(topic){
+      var d = topicStats[topic];
+      var rate = Math.round((d.correct / d.total) * 1000) / 10;
+      var statusClass = rate >= 80 ? 'shd-status-good' : (rate >= 50 ? 'shd-status-warn' : 'shd-status-bad');
+      var statusText = rate >= 80 ? '✅ 우수' : (rate >= 50 ? '⚠️ 보완 필요' : '🚨 매우 취약');
+      resultHtml += '<tr><td>' + d.subject + '</td><td>' + topic + '</td><td>' + d.correct + ' / ' + d.total + '</td><td>' + rate + '%</td><td class="' + statusClass + '">' + statusText + '</td></tr>';
+    });
+    resultHtml += '</table>';
+
+    resultHtml += '<h4>❌ 오답 문제 상세</h4>';
+    if(incorrectList.length === 0){
+      resultHtml += '<div class="shd-empty">🎉 모든 문제를 맞히셨습니다!</div>';
+    } else {
+      incorrectList.forEach(function(item){
+        var userStr = item.userAns ? item.userAns + '번' : '미응답';
+        resultHtml += '<div class="shd-review-card">';
+        resultHtml += '<strong>[' + item.q.subject + ' · ' + item.q.topic + ']</strong><br>' + item.q.question;
+        resultHtml += '<div style="margin-top:8px; font-size:13px;">내가 선택한 답: <b>' + userStr + '</b> / 정답: <b>' + item.q.answer + '번</b></div>';
+        resultHtml += '<div class="shd-explain">💡 ' + item.q.explanation + '</div>';
+        resultHtml += '</div>';
+      });
+    }
+    document.getElementById('shd-tab-result').innerHTML = resultHtml;
+
+    // 약점 보완 탭 렌더링
+    var weakTopics = Object.keys(topicStats).filter(function(t){
+      return topicStats[t].correct / topicStats[t].total < 1.0;
+    });
+    var weakHtml = '';
+    if(weakTopics.length === 0){
+      weakHtml = '<div class="shd-empty">🎉 취약한 단원이 없습니다! 다음 단계에 도전해보세요.</div>';
+    } else {
+      weakHtml += '<p style="color:#dc2626; font-weight:700;">⚠️ 보완이 필요한 단원: ' + weakTopics.join(', ') + '</p>';
+      weakTopics.forEach(function(t){
+        weakHtml += '<h4>📌 [' + t + '] 재학습 카드</h4>';
+        incorrectList.filter(function(item){ return item.q.topic === t; }).forEach(function(item){
+          weakHtml += '<div class="shd-explain" style="margin-bottom:10px;"><b>복습:</b> ' + item.q.question + '<br><br>' + item.q.explanation + '</div>';
+        });
+      });
+    }
+    document.getElementById('shd-tab-weak').innerHTML = weakHtml;
+
+    shdCbtSwitchTab('shd-tab-result');
+  };
+
+  shdCbtRenderExam();
+})();
+</script>
