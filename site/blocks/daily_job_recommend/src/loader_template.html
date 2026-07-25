@@ -1,0 +1,53 @@
+<script>
+(function () {
+  'use strict';
+  // 이 스크립트 자체를 디디쌤 코드블럭에 붙여넣는다. src/template.html 본문은 GitHub에 그대로 두고
+  // 여기서 fetch해와서 실행 시점에 API 키/화이트리스트를 채워넣는다 — 레포에는 플레이스홀더만 존재.
+  var SNC_TEMPLATE_URL = 'https://raw.githubusercontent.com/paul-10101/Dive2026-Solunet/main/site/blocks/daily_job_recommend/src/template.html';
+  var SNC_WHITELIST_URL = 'https://raw.githubusercontent.com/paul-10101/Dive2026-Solunet/main/site/blocks/daily_job_recommend/data/ocean_jobs_whitelist.json';
+  // 주의: 이 토큰은 template.html이 쓰는 __WORKNET_API_KEY__와 일부러 다른 이름을 씀 —
+  // 같은 문자열이면 build.py가 아래 31번째 줄의 런타임 치환 코드까지 같이 지워버림.
+  var SNC_API_KEY = "__LOADER_WORKNET_API_KEY__";
+  var sncMountPoint = document.currentScript;
+
+  function sncShowError(msg) {
+    var el = document.createElement('div');
+    el.style.cssText = 'padding:16px;color:#e2725b;font-size:14px;font-family:sans-serif;';
+    el.textContent = msg;
+    sncMountPoint.parentNode.insertBefore(el, sncMountPoint);
+  }
+
+  Promise.all([
+    fetch(SNC_TEMPLATE_URL).then(function (r) {
+      if (!r.ok) throw new Error('template.html 로드 실패 (' + r.status + ')');
+      return r.text();
+    }),
+    fetch(SNC_WHITELIST_URL).then(function (r) {
+      if (!r.ok) throw new Error('ocean_jobs_whitelist.json 로드 실패 (' + r.status + ')');
+      return r.json();
+    })
+  ]).then(function (results) {
+    var html = results[0];
+    var whitelistJobs = results[1].jobs || [];
+
+    html = html.replace('__WORKNET_API_KEY__', SNC_API_KEY);
+    html = html.replace('/*__SNC_WHITELIST_JSON__*/[]', JSON.stringify(whitelistJobs));
+
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+
+    // innerHTML로 넣은 <script>는 브라우저가 자동 실행하지 않는다 — 새로 만들어서 교체해야 실행됨.
+    var oldScripts = wrapper.querySelectorAll('script');
+    for (var i = 0; i < oldScripts.length; i++) {
+      var newScript = document.createElement('script');
+      newScript.textContent = oldScripts[i].textContent;
+      oldScripts[i].parentNode.replaceChild(newScript, oldScripts[i]);
+    }
+
+    sncMountPoint.parentNode.insertBefore(wrapper, sncMountPoint);
+  }).catch(function (err) {
+    console.error('[snc] GitHub에서 일일 직업 추천 블록 로드 실패:', err);
+    sncShowError('일일 직업 추천 블록을 불러오지 못했습니다. 새로고침 해보세요.');
+  });
+})();
+</script>
