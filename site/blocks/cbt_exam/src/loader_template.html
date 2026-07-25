@@ -1,0 +1,49 @@
+<script>
+(function () {
+  'use strict';
+  // 이 스크립트 자체를 디디쌤 코드블럭에 붙여넣는다. src/template.html 본문은 GitHub에 그대로 두고
+  // 여기서 fetch해와서 실행 시점에 문제 데이터를 채워넣는다 — API 키 등 비밀값은 없음.
+  var SNC_CBT_TEMPLATE_URL = 'https://raw.githubusercontent.com/paul-10101/Dive2026-Solunet/main/site/blocks/cbt_exam/src/template.html';
+  var SNC_CBT_DATA_URL = 'https://raw.githubusercontent.com/paul-10101/Dive2026-Solunet/main/site/blocks/cbt_exam/data/questions.json';
+  var sncCbtMountPoint = document.currentScript;
+
+  function sncCbtShowError(msg) {
+    var el = document.createElement('div');
+    el.style.cssText = 'padding:16px;color:#e2725b;font-size:14px;font-family:sans-serif;';
+    el.textContent = msg;
+    sncCbtMountPoint.parentNode.insertBefore(el, sncCbtMountPoint);
+  }
+
+  Promise.all([
+    fetch(SNC_CBT_TEMPLATE_URL).then(function (r) {
+      if (!r.ok) throw new Error('template.html 로드 실패 (' + r.status + ')');
+      return r.text();
+    }),
+    fetch(SNC_CBT_DATA_URL).then(function (r) {
+      if (!r.ok) throw new Error('questions.json 로드 실패 (' + r.status + ')');
+      return r.json();
+    })
+  ]).then(function (results) {
+    var html = results[0];
+    var questions = results[1];
+
+    html = html.replace('/*__SNC_CBT_QUESTIONS_JSON__*/[]', JSON.stringify(questions));
+
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+
+    // innerHTML로 넣은 <script>는 브라우저가 자동 실행하지 않는다 — 새로 만들어서 교체해야 실행됨.
+    var oldScripts = wrapper.querySelectorAll('script');
+    for (var i = 0; i < oldScripts.length; i++) {
+      var newScript = document.createElement('script');
+      newScript.textContent = oldScripts[i].textContent;
+      oldScripts[i].parentNode.replaceChild(newScript, oldScripts[i]);
+    }
+
+    sncCbtMountPoint.parentNode.insertBefore(wrapper, sncCbtMountPoint);
+  }).catch(function (err) {
+    console.error('[snc] GitHub에서 CBT 모의고사 블록 로드 실패:', err);
+    sncCbtShowError('CBT 모의고사 블록을 불러오지 못했습니다. 새로고침 해보세요.');
+  });
+})();
+</script>

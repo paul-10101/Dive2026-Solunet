@@ -1,0 +1,388 @@
+<div id="snc-root">
+  <div id="sncCbtApp"></div>
+</div>
+
+<style>
+#snc-root { font-family: 'Noto Sans KR', 'Inter', -apple-system, sans-serif; }
+#snc-root .snc-cbt-app { min-height: 100vh; background: #f8f9fb; display: flex; flex-direction: column; }
+#snc-root .snc-cbt-header { background: #ffffff; border-bottom: 1px solid rgba(0,0,0,0.08); padding: 16px 24px; }
+#snc-root .snc-cbt-header.snc-cbt-sticky { position: sticky; top: 0; z-index: 10; padding: 12px 24px; }
+#snc-root .snc-cbt-header-inner { max-width: 640px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+#snc-root .snc-cbt-logo { width: 36px; height: 36px; border-radius: 12px; background: #1a56db; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+#snc-root .snc-cbt-logo svg { width: 20px; height: 20px; color: #ffffff; }
+#snc-root .snc-cbt-title { font-size: 15px; font-weight: 600; color: #111318; line-height: 1.3; margin: 0; }
+#snc-root .snc-cbt-subtitle { font-size: 12px; color: #6b7280; margin: 2px 0 0; }
+#snc-root .snc-cbt-main { flex: 1; padding: 32px 16px; }
+#snc-root .snc-cbt-main.snc-cbt-main-exam { padding: 24px 16px; }
+#snc-root .snc-cbt-container { width: 100%; max-width: 640px; margin: 0 auto; }
+#snc-root .snc-cbt-h2 { font-size: 22px; font-weight: 700; color: #111318; margin: 0 0 4px; }
+#snc-root .snc-cbt-hint { font-size: 13px; color: #6b7280; margin: 0 0 20px; }
+#snc-root .snc-cbt-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+#snc-root .snc-cbt-exam-btn { width: 100%; text-align: left; padding: 16px 20px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); background: #ffffff; cursor: pointer; transition: all .15s; font-family: inherit; }
+#snc-root .snc-cbt-exam-btn:hover { border-color: rgba(26,86,219,0.4); background: rgba(238,242,255,0.5); }
+#snc-root .snc-cbt-exam-btn.snc-cbt-selected { border-color: #1a56db; background: #eef2ff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+#snc-root .snc-cbt-exam-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+#snc-root .snc-cbt-exam-name { font-weight: 600; font-size: 14px; line-height: 1.4; color: #111318; margin: 0; }
+#snc-root .snc-cbt-exam-btn.snc-cbt-selected .snc-cbt-exam-name { color: #1a56db; }
+#snc-root .snc-cbt-exam-meta { font-size: 12px; color: #6b7280; margin: 2px 0 0; }
+#snc-root .snc-cbt-radio { width: 20px; height: 20px; border-radius: 999px; border: 2px solid rgba(0,0,0,0.08); flex-shrink: 0; transition: all .15s; display: flex; align-items: center; justify-content: center; }
+#snc-root .snc-cbt-radio.snc-cbt-on { border-color: #1a56db; background: #1a56db; }
+#snc-root .snc-cbt-radio-dot { width: 8px; height: 8px; border-radius: 999px; background: #ffffff; }
+#snc-root .snc-cbt-note { font-size: 12px; color: #6b7280; padding: 0 4px; margin: 0 0 16px; }
+#snc-root .snc-cbt-primary-btn { width: 100%; padding: 14px; border-radius: 16px; background: #1a56db; color: #ffffff; font-weight: 600; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .15s, transform .1s; font-family: inherit; }
+#snc-root .snc-cbt-primary-btn:hover:not(:disabled) { opacity: .9; }
+#snc-root .snc-cbt-primary-btn:active:not(:disabled) { transform: scale(0.99); }
+#snc-root .snc-cbt-primary-btn:disabled { opacity: .4; cursor: not-allowed; }
+#snc-root .snc-cbt-primary-btn svg { width: 16px; height: 16px; }
+#snc-root .snc-cbt-secondary-btn { width: 100%; padding: 14px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); background: #ffffff; color: #111318; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
+#snc-root .snc-cbt-secondary-btn:hover { background: #f1f3f7; }
+#snc-root .snc-cbt-footer-note { text-align: center; font-size: 12px; color: #6b7280; margin: 16px 0 0; }
+#snc-root .snc-cbt-progress-wrap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+#snc-root .snc-cbt-progress-left { display: flex; align-items: center; gap: 8px; }
+#snc-root .snc-cbt-progress-left svg { width: 16px; height: 16px; color: #1a56db; }
+#snc-root .snc-cbt-progress-left span { font-size: 14px; font-weight: 600; color: #111318; }
+#snc-root .snc-cbt-progress-count { font-size: 14px; font-weight: 500; color: #6b7280; }
+#snc-root .snc-cbt-progress-track { height: 6px; background: #f1f3f7; border-radius: 999px; overflow: hidden; }
+#snc-root .snc-cbt-progress-fill { height: 100%; background: #1a56db; border-radius: 999px; transition: width .3s; }
+#snc-root .snc-cbt-qlist { display: flex; flex-direction: column; gap: 20px; }
+#snc-root .snc-cbt-qcard { background: #ffffff; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); overflow: hidden; transition: all .15s; }
+#snc-root .snc-cbt-qcard.snc-cbt-answered { border-color: rgba(26,86,219,0.3); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+#snc-root .snc-cbt-qhead { padding: 20px 20px 12px; }
+#snc-root .snc-cbt-qmeta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+#snc-root .snc-cbt-qnum { font-size: 12px; font-weight: 700; color: #6b7280; }
+#snc-root .snc-cbt-qtext { font-size: 14px; font-weight: 500; color: #111318; line-height: 1.6; margin: 0; white-space: pre-line; }
+#snc-root .snc-cbt-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid; }
+#snc-root .snc-cbt-badge-b1 { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+#snc-root .snc-cbt-badge-b2 { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+#snc-root .snc-cbt-badge-b3 { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+#snc-root .snc-cbt-badge-b4 { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
+#snc-root .snc-cbt-badge-b5 { background: #fff1f2; color: #be123c; border-color: #fecdd3; }
+#snc-root .snc-cbt-badge-b6 { background: #ecfeff; color: #0e7490; border-color: #a5f3fc; }
+#snc-root .snc-cbt-badge-b7 { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
+#snc-root .snc-cbt-badge-b0 { background: #f9fafb; color: #4b5563; border-color: #e5e7eb; }
+#snc-root .snc-cbt-opts { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+#snc-root .snc-cbt-opt { width: 100%; text-align: left; display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); background: #f8f9fb; font-size: 14px; cursor: pointer; transition: all .1s; font-family: inherit; color: #111318; }
+#snc-root .snc-cbt-opt:hover { border-color: rgba(26,86,219,0.4); background: rgba(238,242,255,0.6); }
+#snc-root .snc-cbt-opt.snc-cbt-chosen { background: #1a56db; color: #ffffff; border-color: #1a56db; }
+#snc-root .snc-cbt-opt-idx { flex-shrink: 0; width: 20px; height: 20px; border-radius: 999px; border: 1px solid rgba(107,114,128,0.4); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; color: #6b7280; }
+#snc-root .snc-cbt-opt.snc-cbt-chosen .snc-cbt-opt-idx { border-color: rgba(255,255,255,0.5); color: #ffffff; }
+#snc-root .snc-cbt-opt-text { line-height: 1.5; }
+#snc-root .snc-cbt-warning { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; font-size: 14px; color: #b45309; margin-top: 20px; }
+#snc-root .snc-cbt-warning svg { width: 16px; height: 16px; flex-shrink: 0; }
+#snc-root .snc-cbt-submit-wrap { margin-top: 20px; }
+#snc-root .snc-cbt-score-card { background: #ffffff; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); padding: 24px; text-align: center; }
+#snc-root .snc-cbt-score-label { font-size: 13px; color: #6b7280; margin: 0 0 4px; }
+#snc-root .snc-cbt-score-num { font-size: 48px; font-weight: 700; color: #111318; margin: 0 0 4px; }
+#snc-root .snc-cbt-score-num span { font-size: 20px; font-weight: 600; color: #6b7280; }
+#snc-root .snc-cbt-grade { font-size: 14px; font-weight: 600; margin: 0 0 16px; }
+#snc-root .snc-cbt-grade-pass { color: #059669; }
+#snc-root .snc-cbt-grade-fail { color: #f43f5e; }
+#snc-root .snc-cbt-score-row { display: flex; align-items: center; justify-content: center; gap: 24px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.08); }
+#snc-root .snc-cbt-score-item p:first-child { font-size: 19px; font-weight: 700; margin: 0; }
+#snc-root .snc-cbt-score-item p:last-child { font-size: 11px; color: #6b7280; margin: 2px 0 0; }
+#snc-root .snc-cbt-score-divider { width: 1px; height: 32px; background: rgba(0,0,0,0.08); }
+#snc-root .snc-cbt-perfect { background: #ffffff; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); padding: 32px; text-align: center; margin-top: 24px; }
+#snc-root .snc-cbt-perfect svg { width: 48px; height: 48px; color: #10b981; margin: 0 auto 12px; display: block; }
+#snc-root .snc-cbt-perfect strong { display: block; font-weight: 600; color: #111318; font-size: 15px; }
+#snc-root .snc-cbt-perfect p { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
+#snc-root .snc-cbt-wrong-section { margin-top: 24px; }
+#snc-root .snc-cbt-wrong-title { font-size: 14px; font-weight: 600; color: #111318; padding: 0 4px; margin: 0 0 12px; }
+#snc-root .snc-cbt-wrong-list { display: flex; flex-direction: column; gap: 12px; }
+#snc-root .snc-cbt-wrong-card { background: #ffffff; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); overflow: hidden; }
+#snc-root .snc-cbt-wrong-head { padding: 16px 20px 12px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+#snc-root .snc-cbt-wrong-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+#snc-root .snc-cbt-wrong-meta svg { width: 16px; height: 16px; color: #fb7185; flex-shrink: 0; }
+#snc-root .snc-cbt-wrong-qnum { font-size: 12px; color: #6b7280; font-weight: 500; }
+#snc-root .snc-cbt-wrong-body { padding: 12px 20px 16px; display: flex; flex-direction: column; gap: 6px; }
+#snc-root .snc-cbt-ans-row { display: flex; gap: 8px; font-size: 14px; }
+#snc-root .snc-cbt-ans-label { font-size: 12px; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+#snc-root .snc-cbt-ans-label.snc-cbt-mine { color: #f43f5e; }
+#snc-root .snc-cbt-ans-label.snc-cbt-correct { color: #059669; }
+#snc-root .snc-cbt-ans-value { font-size: 14px; color: #6b7280; line-height: 1.5; }
+#snc-root .snc-cbt-ans-value.snc-cbt-correct-value { color: #111318; font-weight: 500; }
+#snc-root .snc-cbt-wrong-explain { font-size: 11px; color: #6b7280; padding-top: 2px; margin: 4px 0 0; }
+#snc-root .snc-cbt-reset-wrap { margin-top: 24px; }
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  var SNC_CBT_QUESTIONS = /*__SNC_CBT_QUESTIONS_JSON__*/[];
+  var SNC_CBT_MAX_Q = 20;
+
+  var sncCbtState = {
+    screen: 'select',
+    selectedExam: '',
+    questions: [],
+    answers: {},
+    showWarning: false
+  };
+
+  function sncCbtEsc(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function sncCbtShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function sncCbtExamNames() {
+    var seen = {}; var names = [];
+    for (var i = 0; i < SNC_CBT_QUESTIONS.length; i++) {
+      var n = SNC_CBT_QUESTIONS[i].examName;
+      if (!seen[n]) { seen[n] = true; names.push(n); }
+    }
+    return names;
+  }
+
+  function sncCbtExamCount(name) {
+    var c = 0;
+    for (var i = 0; i < SNC_CBT_QUESTIONS.length; i++) if (SNC_CBT_QUESTIONS[i].examName === name) c++;
+    return c;
+  }
+
+  function sncCbtBuildExam(examName) {
+    var pool = SNC_CBT_QUESTIONS.filter(function (q) { return q.examName === examName; });
+    var chosen = sncCbtShuffle(pool).slice(0, Math.min(SNC_CBT_MAX_Q, pool.length));
+    return chosen.map(function (q, idx) {
+      var opts = q.options.map(function (text, i) { return { text: text, isCorrect: (i + 1) === q.answer }; });
+      var shuffled = sncCbtShuffle(opts);
+      var correctIndex = -1;
+      for (var i = 0; i < shuffled.length; i++) if (shuffled[i].isCorrect) { correctIndex = i + 1; break; }
+      return {
+        id: q.id, qNum: idx + 1, examName: q.examName, subject: q.subject,
+        question: q.question, options: shuffled.map(function (o) { return o.text; }),
+        correctIndex: correctIndex, correctAnswerText: shuffled[correctIndex - 1].text
+      };
+    });
+  }
+
+  var SNC_CBT_BADGE = {
+    '항해': 'snc-cbt-badge-b1', '운용': 'snc-cbt-badge-b2', '법규': 'snc-cbt-badge-b3',
+    '기관': 'snc-cbt-badge-b4', '영어': 'snc-cbt-badge-b5', '상선전문': 'snc-cbt-badge-b6', '어선전문': 'snc-cbt-badge-b7'
+  };
+
+  function sncCbtBadge(subject) {
+    var cls = SNC_CBT_BADGE[subject] || 'snc-cbt-badge-b0';
+    return '<span class="snc-cbt-badge ' + cls + '">' + sncCbtEsc(subject) + '</span>';
+  }
+
+  function sncCbtShortName(name) {
+    return name.replace('2025년 정기 제1회 해기사 시험 ', '');
+  }
+
+  var SNC_CBT_ICONS = {
+    anchor: '<circle cx="12" cy="5" r="3"></circle><line x1="12" y1="22" x2="12" y2="8"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>',
+    chevron: '<polyline points="9 18 15 12 9 6"></polyline>',
+    rotate: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path>',
+    check: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>',
+    xcircle: '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>',
+    book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>',
+    alert: '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+  };
+
+  function sncCbtIcon(name) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + SNC_CBT_ICONS[name] + '</svg>';
+  }
+
+  function sncCbtRenderSelect() {
+    var names = sncCbtExamNames();
+    var selected = sncCbtState.selectedExam;
+    var count = selected ? sncCbtExamCount(selected) : 0;
+    var willShow = Math.min(count, SNC_CBT_MAX_Q);
+
+    var html = '';
+    html += '<div class="snc-cbt-app">';
+    html += '<header class="snc-cbt-header"><div class="snc-cbt-header-inner">';
+    html += '<div class="snc-cbt-logo">' + sncCbtIcon('anchor') + '</div>';
+    html += '<div><p class="snc-cbt-title">해기사 CBT 모의고사</p><p class="snc-cbt-subtitle">2025년 정기 제1회 실제 기출</p></div>';
+    html += '</div></header>';
+    html += '<main class="snc-cbt-main"><div class="snc-cbt-container">';
+    html += '<h2 class="snc-cbt-h2">응시할 시험을 선택하세요</h2>';
+    html += '<p class="snc-cbt-hint">문제는 무작위로 최대 20문항 출제됩니다</p>';
+    html += '<div class="snc-cbt-list">';
+    names.forEach(function (name) {
+      var c = sncCbtExamCount(name);
+      var isSel = selected === name;
+      html += '<button type="button" class="snc-cbt-exam-btn' + (isSel ? ' snc-cbt-selected' : '') + '" data-snc-cbt-exam="' + sncCbtEsc(name) + '">';
+      html += '<div class="snc-cbt-exam-row"><div>';
+      html += '<p class="snc-cbt-exam-name">' + sncCbtEsc(sncCbtShortName(name)) + '</p>';
+      html += '<p class="snc-cbt-exam-meta">보유 문항 ' + c + '개 · 최대 ' + Math.min(c, SNC_CBT_MAX_Q) + '문항 출제</p>';
+      html += '</div><div class="snc-cbt-radio' + (isSel ? ' snc-cbt-on' : '') + '">' + (isSel ? '<div class="snc-cbt-radio-dot"></div>' : '') + '</div></div>';
+      html += '</button>';
+    });
+    html += '</div>';
+    if (selected) {
+      html += '<p class="snc-cbt-note">' + (count < SNC_CBT_MAX_Q
+        ? ('보유 문항이 ' + count + '개라 ' + willShow + '문항으로 출제됩니다.')
+        : ('보유 문항 ' + count + '개 중 ' + willShow + '문항이 무작위로 출제됩니다.')) + '</p>';
+    }
+    html += '<button type="button" class="snc-cbt-primary-btn" id="sncCbtStartBtn"' + (selected ? '' : ' disabled') + '>시험 시작하기 ' + sncCbtIcon('chevron') + '</button>';
+    html += '<p class="snc-cbt-footer-note">문제 출처: 한국해양수산연수원 공개자료 · 이미지 문항 제외</p>';
+    html += '</div></main></div>';
+    return html;
+  }
+
+  function sncCbtRenderExam() {
+    var qs = sncCbtState.questions;
+    var answers = sncCbtState.answers;
+    var answeredCount = Object.keys(answers).length;
+    var total = qs.length;
+    var pct = total ? Math.round((answeredCount / total) * 100) : 0;
+
+    var html = '';
+    html += '<div class="snc-cbt-app">';
+    html += '<header class="snc-cbt-header snc-cbt-sticky"><div class="snc-cbt-header-inner" style="flex-direction:column;align-items:stretch;">';
+    html += '<div class="snc-cbt-progress-wrap"><div class="snc-cbt-progress-left">' + sncCbtIcon('anchor') + '<span>' + sncCbtEsc(sncCbtShortName(qs[0] ? qs[0].examName : '')) + '</span></div>';
+    html += '<span class="snc-cbt-progress-count">' + answeredCount + ' / ' + total + '</span></div>';
+    html += '<div class="snc-cbt-progress-track"><div class="snc-cbt-progress-fill" style="width:' + pct + '%"></div></div>';
+    html += '</div></header>';
+    html += '<main class="snc-cbt-main snc-cbt-main-exam"><div class="snc-cbt-container">';
+    html += '<div class="snc-cbt-qlist">';
+    qs.forEach(function (q) {
+      var sel = answers[q.qNum];
+      html += '<div class="snc-cbt-qcard' + (sel !== undefined ? ' snc-cbt-answered' : '') + '">';
+      html += '<div class="snc-cbt-qhead"><div class="snc-cbt-qmeta"><span class="snc-cbt-qnum">Q' + q.qNum + '</span>' + sncCbtBadge(q.subject) + '</div>';
+      html += '<p class="snc-cbt-qtext">' + sncCbtEsc(q.question) + '</p></div>';
+      html += '<div class="snc-cbt-opts">';
+      q.options.forEach(function (opt, i) {
+        var idx = i + 1;
+        var chosen = sel === idx;
+        html += '<button type="button" class="snc-cbt-opt' + (chosen ? ' snc-cbt-chosen' : '') + '" data-snc-cbt-qnum="' + q.qNum + '" data-snc-cbt-opt="' + idx + '">';
+        html += '<span class="snc-cbt-opt-idx">' + idx + '</span><span class="snc-cbt-opt-text">' + sncCbtEsc(opt) + '</span></button>';
+      });
+      html += '</div></div>';
+    });
+    html += '</div>';
+    if (sncCbtState.showWarning) {
+      html += '<div class="snc-cbt-warning">' + sncCbtIcon('alert') + '아직 ' + (total - answeredCount) + '문항을 답하지 않았습니다. 모두 답한 후 제출해주세요.</div>';
+    }
+    html += '<div class="snc-cbt-submit-wrap"><button type="button" class="snc-cbt-primary-btn" id="sncCbtSubmitBtn">' + sncCbtIcon('book') + ' 답안 제출 및 채점</button></div>';
+    html += '</div></main></div>';
+    return html;
+  }
+
+  function sncCbtRenderResult() {
+    var qs = sncCbtState.questions;
+    var answers = sncCbtState.answers;
+    var correct = qs.filter(function (q) { return answers[q.qNum] === q.correctIndex; }).length;
+    var total = qs.length;
+    var score = total ? Math.round((correct / total) * 100) : 0;
+    var wrongList = qs.filter(function (q) { return answers[q.qNum] !== q.correctIndex; })
+      .map(function (q) { return Object.assign({}, q, { userAnsNum: answers[q.qNum] || null }); });
+    var pass = score >= 60;
+
+    var html = '';
+    html += '<div class="snc-cbt-app">';
+    html += '<header class="snc-cbt-header"><div class="snc-cbt-header-inner">';
+    html += '<div class="snc-cbt-logo">' + sncCbtIcon('anchor') + '</div><span class="snc-cbt-title">채점 결과</span>';
+    html += '</div></header>';
+    html += '<main class="snc-cbt-main"><div class="snc-cbt-container">';
+    html += '<div class="snc-cbt-score-card"><p class="snc-cbt-score-label">최종 점수</p>';
+    html += '<p class="snc-cbt-score-num">' + score + '<span>점</span></p>';
+    html += '<p class="snc-cbt-grade ' + (pass ? 'snc-cbt-grade-pass' : 'snc-cbt-grade-fail') + '">' + (pass ? '합격권' : '불합격권') + '</p>';
+    html += '<div class="snc-cbt-score-row">';
+    html += '<div class="snc-cbt-score-item"><p style="color:#059669">' + correct + '</p><p>정답</p></div>';
+    html += '<div class="snc-cbt-score-divider"></div>';
+    html += '<div class="snc-cbt-score-item"><p style="color:#f43f5e">' + wrongList.length + '</p><p>오답</p></div>';
+    html += '<div class="snc-cbt-score-divider"></div>';
+    html += '<div class="snc-cbt-score-item"><p style="color:#111318">' + total + '</p><p>전체</p></div>';
+    html += '</div></div>';
+
+    if (wrongList.length === 0) {
+      html += '<div class="snc-cbt-perfect">' + sncCbtIcon('check') + '<strong>만점입니다!</strong><p>모든 문제를 정확히 맞히셨습니다.</p></div>';
+    } else {
+      html += '<div class="snc-cbt-wrong-section"><h3 class="snc-cbt-wrong-title">오답 확인 (' + wrongList.length + '문항)</h3><div class="snc-cbt-wrong-list">';
+      wrongList.forEach(function (item) {
+        var userAns = item.userAnsNum ? (item.userAnsNum + '번 — ' + item.options[item.userAnsNum - 1]) : '미응답';
+        html += '<div class="snc-cbt-wrong-card"><div class="snc-cbt-wrong-head">';
+        html += '<div class="snc-cbt-wrong-meta">' + sncCbtIcon('xcircle') + '<span class="snc-cbt-wrong-qnum">Q' + item.qNum + '</span>' + sncCbtBadge(item.subject) + '</div>';
+        html += '<p class="snc-cbt-qtext">' + sncCbtEsc(item.question) + '</p></div>';
+        html += '<div class="snc-cbt-wrong-body">';
+        html += '<div class="snc-cbt-ans-row"><span class="snc-cbt-ans-label snc-cbt-mine">내 답</span><span class="snc-cbt-ans-value">' + sncCbtEsc(userAns) + '</span></div>';
+        html += '<div class="snc-cbt-ans-row"><span class="snc-cbt-ans-label snc-cbt-correct">정답</span><span class="snc-cbt-ans-value snc-cbt-correct-value">' + item.correctIndex + '번 — ' + sncCbtEsc(item.correctAnswerText) + '</span></div>';
+        html += '<p class="snc-cbt-wrong-explain">원본 문제지에 해설이 포함되어 있지 않아 정답만 표시합니다.</p>';
+        html += '</div></div>';
+      });
+      html += '</div></div>';
+    }
+
+    html += '<div class="snc-cbt-reset-wrap"><button type="button" class="snc-cbt-secondary-btn" id="sncCbtResetBtn">' + sncCbtIcon('rotate') + ' 다른 시험 선택하기</button></div>';
+    html += '</div></main></div>';
+    return html;
+  }
+
+  function sncCbtRender() {
+    var mount = document.getElementById('sncCbtApp');
+    if (!mount) return;
+    if (sncCbtState.screen === 'exam') mount.innerHTML = sncCbtRenderExam();
+    else if (sncCbtState.screen === 'result') mount.innerHTML = sncCbtRenderResult();
+    else mount.innerHTML = sncCbtRenderSelect();
+  }
+
+  function sncCbtHandleClick(e) {
+    var examBtn = e.target.closest('[data-snc-cbt-exam]');
+    if (examBtn) {
+      sncCbtState.selectedExam = examBtn.getAttribute('data-snc-cbt-exam');
+      sncCbtRender();
+      return;
+    }
+    if (e.target.closest('#sncCbtStartBtn')) {
+      if (!sncCbtState.selectedExam) return;
+      sncCbtState.questions = sncCbtBuildExam(sncCbtState.selectedExam);
+      sncCbtState.answers = {};
+      sncCbtState.showWarning = false;
+      sncCbtState.screen = 'exam';
+      sncCbtRender();
+      return;
+    }
+    var optBtn = e.target.closest('[data-snc-cbt-opt]');
+    if (optBtn) {
+      var qNum = parseInt(optBtn.getAttribute('data-snc-cbt-qnum'), 10);
+      var optIdx = parseInt(optBtn.getAttribute('data-snc-cbt-opt'), 10);
+      sncCbtState.answers[qNum] = optIdx;
+      sncCbtState.showWarning = false;
+      sncCbtRender();
+      return;
+    }
+    if (e.target.closest('#sncCbtSubmitBtn')) {
+      var total = sncCbtState.questions.length;
+      var answeredCount = Object.keys(sncCbtState.answers).length;
+      if (answeredCount < total) {
+        sncCbtState.showWarning = true;
+        sncCbtRender();
+        return;
+      }
+      sncCbtState.screen = 'result';
+      sncCbtRender();
+      return;
+    }
+    if (e.target.closest('#sncCbtResetBtn')) {
+      sncCbtState = { screen: 'select', selectedExam: '', questions: [], answers: {}, showWarning: false };
+      sncCbtRender();
+      return;
+    }
+  }
+
+  function sncCbtMount() {
+    var root = document.getElementById('snc-root');
+    if (!root) return;
+    root.addEventListener('click', sncCbtHandleClick);
+    sncCbtRender();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sncCbtMount);
+  } else {
+    sncCbtMount();
+  }
+})();
+</script>
